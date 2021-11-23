@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">android_lab5_1_continuewatch</string>
+    <string name="sec_elapsed">Seconds elapsed: %1$d</string>
+    <string name="text">you shouldn\'t see this</string>
+</resources>
