@@ -24,9 +24,7 @@ class MainActivity3 : AppCompatActivity() {
             Log.d("MainActivity3", "coroutine launch")
             while (true) {
                 Log.d("MainActivity3", "coroutine work")
-                textSecondsElapsed.post {
-                    textSecondsElapsed.text = getString(R.string.sec_elapsed, secondsElapsed++)
-                }
+                textSecondsElapsed.text = getString(R.string.sec_elapsed, secondsElapsed++)
                 delay(1000)
             }
         }

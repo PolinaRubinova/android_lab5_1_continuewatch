@@ -7,18 +7,17 @@ import android.util.Log
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
+import java.util.concurrent.Future
 
 class MainActivity2 : AppCompatActivity() {
     private var secondsElapsed: Int = 0
-    lateinit var textSecondsElapsed: TextView
+    private lateinit var textSecondsElapsed: TextView
     private lateinit var sharedPref: SharedPreferences
-    private lateinit var executor: ExecutorService
+    private lateinit var future: Future<*>
 
-    private fun startTimer() {
-        executor = Executors.newFixedThreadPool(1)
-        executor.execute {
-            while(!executor.isShutdown) {
+    private fun startTimer(execServ: ExecutorService): Future<*> {
+        return execServ.submit {
+            while(!execServ.isShutdown) {
                 Log.d("MainActivity2", "${Thread.currentThread()} is iterating")
                 textSecondsElapsed.post {
                     textSecondsElapsed.text = getString(R.string.sec_elapsed, secondsElapsed++)
@@ -36,14 +35,14 @@ class MainActivity2 : AppCompatActivity() {
     }
 
     override fun onStart() {
-        startTimer()
+        future = startTimer((applicationContext as MyApplication).executorService)
         secondsElapsed = sharedPref.getInt("SEC", 0)
         Log.d("MainActivity2", "on start\nSEC = $secondsElapsed")
         super.onStart()
     }
 
     override fun onStop() {
-        executor.shutdown()
+        future.cancel(true)
         sharedPref.edit().putInt("SEC", secondsElapsed).apply()
         Log.d("MainActivity2", "on stop\nSEC = $secondsElapsed")
         super.onStop()
